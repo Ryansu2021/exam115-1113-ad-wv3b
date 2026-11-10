@@ -469,7 +469,16 @@ body.proj #notep,body.aud #notep{display:none!important}
 .xc-ico{font-size:42px;display:flex;align-items:center;justify-content:center;height:100%}
 #fxd .xs-sec .dk-sbtn{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
 #fxd .xs-sec .dk-sbtn button{font-size:12px;padding:2px 7px}
-</style>
+/*@@M20@@*/
+/* ===== 選用單元：第 20 題（模組_第20題.py） ===== */
+.z20cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55em;height:calc(var(--ph) * .4);flex:none}
+.z20col{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0;text-align:center}
+.z20col .cb{background:var(--c);border-radius:.35em .35em 0 0;height:calc(var(--h) * .62%);opacity:.85}
+.z20col .cv{font-family:var(--f-display);font-weight:900;font-size:1.45em;color:var(--c);line-height:1.2}
+.z20col .ct{font-weight:900;font-size:.82em;margin-top:.35em;white-space:nowrap}
+.z20col .cs{font-size:.74em;color:var(--ink2)}
+.z20col.hl .ct{color:var(--c-red)}
+/*@@M20_END@@*/</style>
 
 </head><body><header class="top">
   <div class="brand">會考分析研習<b>學員版</b></div>
@@ -579,6 +588,7 @@ const UNITS = [
  ['非選2圖卡','評分規準','圖卡 4 張','','第 2 題・4 張','N8'],
  ['非選2圖卡','幾何解析','圖卡 5 張','','第 2 題・5 張','N9'],
  ['非選2圖卡','學生的迷思','圖卡 4 張','','第 2 題・4 張','N10'],
+/*@@M20@@*/ ['第 20 題','從一題會考題講起','選用｜約 25′','選用單元','作答・猜測・揭曉・三版本','廿'],/*@@M20_END@@*/
  ['加題','現場加題','依現場需求','現場加題','依需求加入的題目','庫'],
  ['帶走','回班試行包','依今天的內容','帶走','依今天講過的內容自動列出','包'],
  ['附錄','講師備忘','課前準備','講師備忘','','附錄']
@@ -622,6 +632,17 @@ const ACT = {
 ACT.gaps  = {id:'gaps', type:'set',q:'兩題猜測：安定國中和全市差多少',items:[ACT.gap,ACT.share]};
 ACT.grade = {id:'grade',type:'set',q:'第 2 題四份樣卷評分',items:[ACT.gA,ACT.gB,ACT.gC,ACT.gD]};
 [ACT.gaps,ACT.grade].forEach(st=>st.items.forEach(x=>x.set=st.id));
+/*@@M20@@*/
+ACT.z20  = {id:'z20',  type:'vote', q:'115 會考第 20 題，你選哪一個？', opts:['A','B','C','D']};
+ACT.zb1  = {id:'zb1',  type:'vote', q:'猜測 1：全國通過率大約多少？', opts:['20% 以下','20–40%','40–60%','60–80%','80% 以上']};
+ACT.zb2  = {id:'zb2',  type:'vote', q:'猜測 2：最多人選的錯誤選項是？', opts:['A','B','D']};
+ACT.zb3  = {id:'zb3',  type:'vote', q:'猜測 3：基礎組（中間的學生）最多人選哪個？', opts:['A','B','C','D']};
+ACT.zthink={id:'zthink',type:'text', q:'第 20 題選 B 的學生，他以為＿＿＿？'};
+ACT.ztrend={id:'ztrend',type:'vote', q:'這五題中，你猜哪一題通過率最低？', opts:['111 第 3 題','112 第 9 題','113 第 15 題','114 第 18 題','115 第 20 題']};
+ACT.zbook= {id:'zbook', type:'vote', q:'你學校的版本，練過幾題「先正推、再逆推」？', opts:['0 題','1 題','2 題以上','不確定']};
+ACT.zbets= {id:'zbets', type:'set', q:'第 20 題：三題猜測', items:[ACT.zb1,ACT.zb2,ACT.zb3]};
+ACT.zbets.items.forEach(x=>x.set='zbets');
+/*@@M20_END@@*/
 const ACTS = Object.values(ACT);
 const ACTN = AFTER ? N('研習現場用手機作答的題目。') : INTON ? N('用手機在研習互動頁作答（整場同一個連結）。') : N(SLIDO);
 
@@ -985,10 +1006,85 @@ const pgAppendix = u=>[
    ['甲','一級分','第二題評分指引與樣卷 p.7 樣卷一'],['乙','三級分','p.3 樣卷一'],['丙','零級分','p.8 樣卷一'],['丁','二級分','p.5 樣卷一']])])
 ].map(p=>Object.assign(p,{priv:1}));
 
+/*@@M20@@*/const Z20={"scB": "安定基礎組", "sc": "安定國中", "N": 97, "nC": 36, "rate": "37.1", "wl": "B", "nW": 31, "pW": "32.0", "base": [14.0, 34.0, 42.0, 10.0], "nBase": 50, "t4": "十個人，不到四個答對", "s5": "<b>安定國中也是 B：</b>97 人中 31 人（32.0%）選 B，選對 C 的 36 人。", "s6": "<b>安定國中基礎組不一樣：</b>選對 C 的 <b style=\"color:var(--c-indigo)\">42%</b>（21 人），多於選 B 的 <b style=\"color:var(--c-red)\">34%</b>（17 人）。", "st3": ["42%", "安定國中基礎組選對 C", "多於選 B 的 34%", "全國基礎組正好相反：<span style=\"white-space:nowrap\">B 39.07% ＞ C 34.53%</span>"], "st3c": "C.indigo", "nat": {"rate": 38.8, "n": "178,747", "disc": "0.28", "B": 34.76, "base": [13.92, 39.07, 34.53, 12.35]}, "tn": {"rate": 37.93, "n": "13,794", "disc": "0.27", "B": 35.25, "base": [14.29, 39.6, 34.27, 11.67]}, "tb": "https://padlet.com/ghsghs1_1_1/115-7-jgjcxcre8pfva55m", "web3": "https://ryansu2021.github.io/factor-pair-lookup/"};
+
+const Z20Q = `<div class="qbox"><span class="qn">20.</span>已知正整數 <i>M</i> 的因數中，除了 <i>M</i> 之外最大的因數是 2²×11，正整數 <i>N</i> 的因數中，除了 <i>N</i> 之外最大的因數是 3×13。甲、乙兩人提出以下看法：
+<span class="say">【甲】8 一定是 <i>M</i> 的因數</span><span class="say">【乙】9 一定是 <i>N</i> 的因數</span>對於甲、乙兩人的看法，下列判斷何者正確？
+<div class="opt"><span>(A) 甲、乙皆正確</span><span>(B) 甲、乙皆錯誤</span><span>(C) 甲正確，乙錯誤</span><span>(D) 甲錯誤，乙正確</span></div></div>`;
+const Z20SRC = '資料來源：115 年國中教育會考全國數學科試題分析；臺南市數學科試題分析（縣市政府版）；'+Z20.sc+'試題分析（國民中學版）';
+function z20Bars(){
+  const G='#d5d8e0', G2='#bfc4cf', B='#d43c3c', Cc='#4a3fd6';
+  const mk=a=>[[a[0],G,a[0]>=9?a[0].toFixed(1):'',1],[a[1],B,a[1].toFixed(1)+'%'],[a[2],Cc,a[2].toFixed(1)+'%'],[a[3],G2,a[3]>=9?a[3].toFixed(1):'',1]];
+  const rows=[['全國基礎組',mk(Z20.nat.base)],['臺南基礎組',mk(Z20.tn.base)],[Z20.scB,mk(Z20.base),1]];
+  return `<div class="legend"><span style="background:${Cc}">C 正解</span><span style="background:${B}">B 甲乙皆錯</span><span class="g" style="background:${G}">A、D 其他</span></div><div class="bars">${rows.map(r=>{const t=r[1].reduce((s,x)=>s+x[0],0);
+    return `<div class="brow${r[2]?' hi':''}" style="grid-template-columns:6.6em minmax(0,1fr)"><span class="bn">${r[0]}</span><div class="btrack">${r[1].map(s=>`<span class="seg${s[3]?' g':''}" style="width:${(s[0]/t*100).toFixed(2)}%;background:${s[1]}">${s[2]}</span>`).join('')}</div></div>`}).join('')}</div>`;
+}
+function z20Cols(){
+  const it=[[79.8,'111 第 3 題','概念理解','#9d96f0'],[72.4,'112 第 9 題','概念理解','#9d96f0'],[54.7,'113 第 15 題','解題應用','#7a70e6'],[43.6,'114 第 18 題','分析思考','#4a3fd6'],[38.8,'115 第 20 題','分析思考','#d43c3c',1]];
+  return `<div class="z20cols">${it.map(c=>`<div class="z20col${c[4]?' hl':''}" style="--c:${c[3]};--h:${c[0]}"><div class="cv">${c[0]}</div><div class="cb"></div><div class="ct">${c[1]}</div><div class="cs">${c[2]}</div></div>`).join('')}</div>`;
+}
+const Z20LINK=(u,t)=>`<a href="${u}" target="_blank" rel="noopener" style="color:var(--chalk)">${t}</a>`;
+const Z20RX = W('<b>處方：</b>先用康軒例 2、南一例 1 讓學生「正推」，再把同一組數字倒過來問，讓學生「反推」。');
+const pgZ20 = u=>[
+ ASK(op(u,'第 20 題：不看詳解、不用計算機，用手機作答。',[RAW(Z20Q),ACTN],'操作｜手機作答 3′'),{acts:[ACT.z20]}),
+ REV(tx(u,'答案是 C',[A('第 20 題','<b>(C) 甲正確，乙錯誤。</b>'),
+   W('<b>先不講為什麼。</b>看看這一場老師的作答分布，再看全國、臺南與本校的學生。')]),'揭曉：答案','剛才作答：你選哪一個？',{acts:[ACT.z20]}),
+ ASK(tx(u,'第 20 題：先猜，再看數據',[STEPS(['<b>猜測 1</b>：全國通過率大約多少？　20% 以下／20–40%／40–60%／60–80%／80% 以上','<b>猜測 2</b>：最多人選的錯誤選項是？　A／B／D','<b>猜測 3</b>：基礎組（中間的學生）最多人選哪個？　A／B／C／D']),
+   W('<b>錯最多的地方，就是我們教學下手處。</b>'),ACTN],'操作｜猜測 2′'),{acts:[ACT.zbets]}),
+ REV(tx(u,Z20.t4,[ST([
+   [Z20.nat.rate.toFixed(2)+'%','全國通過率',Z20.nat.n+' 位考生','鑑別度 '+Z20.nat.disc,C.orange],
+   [Z20.tn.rate.toFixed(2)+'%','臺南市通過率',Z20.tn.n+' 位考生','鑑別度 '+Z20.tn.disc,C.indigo],
+   [Z20.rate+'%',Z20.sc+'通過率',Z20.N+' 人中 '+Z20.nC+' 人答對','',C.red]]),
+   W('25 題選擇題中，第 20 題是全國、臺南通過率<b>倒數第四低</b>的題目。'),N(Z20SRC)]),
+   '揭曉：通過率','猜測 1：全國通過率大約多少？',{acts:[ACT.zb1]}),
+ REV(tx(u,'最多人選的錯誤選項：B',[ST([
+   [Z20.nat.B.toFixed(2)+'%','全國考生選 B','甲、乙皆錯誤','選對的 C 是 '+Z20.nat.rate.toFixed(2)+'%，只多一點',C.red]]),
+   W('<b>B 不是亂猜出來的。</b>三個人裡就有一個，認真想過之後選了 B。'),W(Z20.s5),N(Z20SRC)]),
+   '揭曉：最多人選的錯誤選項','猜測 2：最多人選的錯誤選項是？',{acts:[ACT.zb2]}),
+ REV(tx(u,'基礎組：選 B 的，比選對的還多',[RAW(z20Bars()),
+   W('<b>全國、臺南的基礎組，選 B 的都比選對的多。</b>'),W(Z20.s6),N(Z20SRC+'（選項百分比，未作答與複選未列）')]),
+   '揭曉：基礎組','猜測 3：基礎組（中間的學生）最多人選哪個？',{acts:[ACT.zb3]}),
+ ASK(tx(u,'第 20 題：選 B 的學生，腦中在想什麼？',[
+   A('(B) 甲、乙皆錯誤','選這個答案的學生，並不是沒在想。'),
+   STEPS(['剛剛選 B 的老師：寫下你當時的想法','其他老師：兩人一組，替選 B 的學生想一想',`到${WALL}寫一句：<b>「他以為＿＿＿＿＿＿。」</b>`]),
+   W('<b>這些句子先留著。</b>下一頁看完關鍵解法，再回頭對照。'),ACTN],'操作｜兩人一組 4′'),{acts:[ACT.zthink]}),
+ REV(tx(u,'關鍵：因數成對',[
+   W('<b>除了自己以外最大的因數 ＝ 原數 ÷ 最小質因數</b>'),
+   TB(['','甲：M','乙：N'],[
+     ['寫成','M ＝ 44 × p','N ＝ 39 × q'],
+     ['限制','p 是 M 的最小質因數；44 是偶數，p 只能是 2','q 是 N 的最小質因數；q ≤ 3，可以是 2 或 3'],
+     ['原數','<b>88</b>','<b>78</b> 或 <b>117</b>'],
+     ['結論','88 ＝ 2³ × 11，8 一定是因數 → 甲對','78 沒有因數 9 → 乙錯']]),
+   W('<b>選 B 的人，多半只想到「N 可以有很多種」，</b>卻沒有把 M 也逆推回去。')]),
+   '揭曉：關鍵解法','回應剛才的「他以為＿＿」'),
+ ASK(op(u,'同一個單元的五道會考題，認知層次一路往上。通過率會怎麼變？',[TB(['年份','題號','認知層次','全國通過率'],[
+   ['111','第 3 題','概念理解','？'],['112','第 9 題','概念理解','？'],['113','第 15 題','解題應用','？'],['114','第 18 題','分析思考','？'],['115','第 20 題','分析思考','？']]),ACTN]),{acts:[ACT.ztrend]}),
+ REV(tx(u,'層次一升，通過率就掉',[RAW(z20Cols()),
+   N('全國通過率（%）。臺南市依序為 80、73、54、43、38。資料來源：111–115 會考逐題表與篩選雙軸對接表；115 年全國數學科試題分析')]),
+   '揭曉：五年通過率','剛才猜：這五題中，哪一題通過率最低？',{acts:[ACT.ztrend]}),
+ ASK(tx(u,'打開課本，自己查你用的版本',[
+   STEPS([`打開課本電子檔 ${Z20LINK(Z20.tb,'（點這裡）')}`,'找你學校版本的七上 2-1','看「先正推、再逆推」練過幾題，回來投票']),
+   ACTN],'操作｜手機 4′'),{acts:[ACT.zbook]}),
+ REV(tx(u,'課本裡，誰練過「成對逆推」？',[TB(['版本','成對逆推','出處'],[
+     ['康軒','✓ 例 2＋隨堂','p.88：因數由小到大排列，頭尾配對 M ＝ 2 × 15 ＝ 30'],
+     ['南一','✓ 例 1＋隨堂','p.84：磁磚排長方形，1 × M ＝ 2 × 12'],
+     ['翰林','✗ 0 題','自評 6（p.99）只列舉因數配對']]),Z20RX,
+   N('資料來源：七上 2-1 學生課本（康軒 p.88、南一 p.84、翰林 p.99）'),N(`查版本網頁：${Z20LINK(Z20.web3,'點這裡對照')}`)]),
+   '揭曉：三版本練過幾題','剛才查到的，和你猜的一樣嗎？',{acts:[ACT.zbook]}),
+ REV(tx(u,'第 20 題：回看三個數字',[ST([
+   [Z20.rate+'%',Z20.sc+'通過率',Z20.N+' 人中 '+Z20.nC+' 人答對','全國 '+Z20.nat.rate.toFixed(2)+'%、臺南 '+Z20.tn.rate.toFixed(2)+'%',C.orange],
+   [Z20.pW+'%',Z20.sc+'最多人選的錯誤選項：'+Z20.wl,Z20.nW+' 人','全國選 B '+Z20.nat.B.toFixed(2)+'%',C.red],
+   [...Z20.st3, C.indigo]]),
+   W('<b>再看課本：</b>成對逆推，翰林 2-1 練過 0 題；康軒、南一各有例題＋隨堂。'),
+   N(Z20SRC+'；七上 2-1 三版本教科書比較')]),
+   '揭曉：三個數字','開場的三個猜測')
+];
+/*@@M20_END@@*/
 let BODY=[], APPX=[];
 const pgNQ = (i)=>{ const [q,n,l]=NQ_SEC[i], u=ui('N'+(i+1)); return l.filter(k=>NQ[k-1]).map((k,j)=>({k:'slide',u,title:q+'・'+n+' '+(j+1),src:k})); };
 BODY.push(...NQ_SEC.flatMap((_,i)=>pgNQ(i)));
 BODY.push(...pgPack(ui('包')));
+/*@@M20@@*/BODY.push(...pgZ20(ui('廿')));/*@@M20_END@@*/
 BODY.push(...pgPick(ui('選')),...pgOpen(ui('序')),...pgData(ui('一')),...pg21(ui('三')),...pg14(ui('四')),...pgL精(ui('精')),...pgL基(ui('基')),...pgL待(ui('待')),...pg07(ui('五')),...pgNonQ(ui('六')),...pgVar(ui('七')),...pgG9(ui('八')));
 APPX = TEACH ? pgAppendix(ui('附錄')) : [];
 
@@ -1050,6 +1146,16 @@ const TN = {
  '兩週試行卡':INTON?'開始互動 goal，揭曉全場想看的證據層級，作為結尾。':'請老師寫在紙本試行卡上，作為結尾。'
 };
 
+/*@@M20@@*/Object.assign(TN,{
+ '第 20 題：不看詳解、不用計算機，用手機作答。':'選用單元「第 20 題｜從一題會考題講起」（約 25 分鐘，預設收起，從牌組拉進來）。開始互動 z20，約 2 分鐘。',
+ '第 20 題：先猜，再看數據':'開始「第 20 題：三題猜測」題組，之後三頁依序揭曉。',
+ '基礎組：選 B 的，比選對的還多':'先看全國、臺南兩列，再停在本校那一列。本校若和全國不同，正好可以問：「我們做對了什麼？」',
+ '第 20 題：選 B 的學生，腦中在想什麼？':'開文字雲 zthink，約 3 分鐘；挑 2～3 句念出來。',
+ '關鍵：因數成對':'用 88 的因數成對帶：1×88、2×44、4×22、8×11。',
+ '打開課本，自己查你用的版本':'開始互動 zbook。課本電子檔在 Padlet。',
+ '第 20 題：回看三個數字':'三個數字都是本校；全國、臺南放在小字對照。'
+});
+/*@@M20_END@@*/
 if(TEACH) BODY.forEach(p=>{ const k=p.title||(p.u!=null?UNITS[p.u][1]:''); const k2=p.k==='open'?(p.sub||''):''; if(TN[k2]) p.tn=TN[k2]; else if(TN[k]) p.tn=TN[k]; });
 /* ---------- 頁面代號與學員版隱藏 ---------- */
 BODY.forEach(p=>{ if(p.u==null) return; const t=p.title||UNITS[p.u][1]; p.id = UNITS[p.u][1]+'｜'+t; });
@@ -1081,9 +1187,9 @@ BODY.forEach(p=>{ if(EXT_TITLES.has(p.title)) p.ext=1; });
 const UKEYS = UNITS.map(u=>u[5]);
 const MODS = {}; UKEYS.forEach(k=>MODS[k]=BODY.filter(p=>p.u!=null&&UNITS[p.u][5]===k));
 const LAYERS=['精','基','待'];
-const UMIN = {'包':[3,2],'N1':[5,3],'N2':[2,1],'N3':[2,1],'N4':[10,7],'N5':[11,7],'N6':[2,2],'N7':[2,1],'N8':[2,2],'N9':[3,2],'N10':[2,2],'精':[12,8],'基':[12,8],'待':[12,8],'選':[3,2],'序':[5,3],'一':[13,8],'三':[15,10],'四':[10,7],'五':[3,2],'六':[22,14],'七':[15,10],'八':[17,9]};
-const UCOL = {'包':'#b4532f','N1':'#1f7fa8','N2':'#1f7fa8','N3':'#1f7fa8','N4':'#1f7fa8','N5':'#1f7fa8','N6':'#7a4fc0','N7':'#7a4fc0','N8':'#7a4fc0','N9':'#7a4fc0','N10':'#7a4fc0','精':'#4a3fd6','基':'#2f8a6a','待':'#c0392b','選':'#2f6f8f','序':'#6b7a90','一':'#4a3fd6','三':'#d43c3c','四':'#e0603f','五':'#ec8a3a','六':'#c9851a','七':'#0f8a5f','八':'#7a4fc0','庫':'#3d6fb0'};
-const UICO = {'包':'✅','精':'👥','基':'👥','待':'👥','選':'','序':'📱','一':'📱','三':'📱','四':'📱👥','五':'','六':'📱👥','七':'📱','八':'📱✍'};
+const UMIN = {/*@@M20@@*/'廿':[25,17],/*@@M20_END@@*/'包':[3,2],'N1':[5,3],'N2':[2,1],'N3':[2,1],'N4':[10,7],'N5':[11,7],'N6':[2,2],'N7':[2,1],'N8':[2,2],'N9':[3,2],'N10':[2,2],'精':[12,8],'基':[12,8],'待':[12,8],'選':[3,2],'序':[5,3],'一':[13,8],'三':[15,10],'四':[10,7],'五':[3,2],'六':[22,14],'七':[15,10],'八':[17,9]};
+const UCOL = {/*@@M20@@*/'廿':'#d9773f',/*@@M20_END@@*/'包':'#b4532f','N1':'#1f7fa8','N2':'#1f7fa8','N3':'#1f7fa8','N4':'#1f7fa8','N5':'#1f7fa8','N6':'#7a4fc0','N7':'#7a4fc0','N8':'#7a4fc0','N9':'#7a4fc0','N10':'#7a4fc0','精':'#4a3fd6','基':'#2f8a6a','待':'#c0392b','選':'#2f6f8f','序':'#6b7a90','一':'#4a3fd6','三':'#d43c3c','四':'#e0603f','五':'#ec8a3a','六':'#c9851a','七':'#0f8a5f','八':'#7a4fc0','庫':'#3d6fb0'};
+const UICO = {/*@@M20@@*/'廿':'📱',/*@@M20_END@@*/'包':'✅','精':'👥','基':'👥','待':'👥','選':'','序':'📱','一':'📱','三':'📱','四':'📱👥','五':'','六':'📱👥','七':'📱','八':'📱✍'};
 const DEF_ORDER=['序','一','三','四','五','六','七','八','包'];
 /*@@XBANK@@*/const XBANK=[];/*@@XBANK_END@@*/
 
@@ -1119,6 +1225,7 @@ function insertX(tok){
 }
 const ROUTE_KEY='flexRoute_'+(CFG.場次代號||'')+(TEACH?'_t':AFTER?'_a':'_s');
 const normR = r=>{ const o=r.o.slice(), x=(r.x||[]).slice(); LAYERS.forEach(L=>{ if(!o.includes(L)){ const i=o.indexOf('五'); o.splice(i<0?o.length:i,0,L); if(!x.includes(L)) x.push(L); } });
+/*@@M20@@*/  if(!o.includes('廿')){ const i=o.indexOf('一'); o.splice(i<0?o.length:i,0,'廿'); if(!x.includes('廿')) x.push('廿'); }/*@@M20_END@@*/
   if(!o.includes('包')){ o.push('包'); if(!o.includes('八') && !x.includes('包')) x.push('包'); }
   r.h=Array.isArray(r.h)?r.h:[];
   NQK.forEach(L=>{ if(!o.includes(L)){ const j=o.indexOf('七'); o.splice(j<0?o.length:j,0,L); if(!x.includes(L)) x.push(L); } }); return Object.assign({},r,{o,x,h:(r.h||[]).slice()}); };
@@ -1126,7 +1233,7 @@ const normR = r=>{ const o=r.o.slice(), x=(r.x||[]).slice(); LAYERS.forEach(L=>{
 let ROUTE=normR((!TEACH&&ROUTE0&&Array.isArray(ROUTE0.o))?ROUTE0:{o:DEF_ORDER.slice(),x:[],c:0});
 try{ const r=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null'); if(r&&Array.isArray(r.o)) ROUTE=normR(r); }catch(e){}
 let PAGES=[], UNIT_START=[], TOCU=[];
-const isDefOrder=()=>ROUTE.o.filter(k=>!/^[QX]/.test(k)&&!LAYERS.includes(k)&&!NQK.includes(k)).join()===DEF_ORDER.join() && !ROUTE.o.some(k=>/^Q/.test(k));
+const isDefOrder=()=>ROUTE.o.filter(k=>!/^[QX]/.test(k)&&!LAYERS.includes(k)/*@@M20@@*/&&!(k==='廿'&&ROUTE.x.includes(k))/*@@M20_END@@*/&&!NQK.includes(k)).join()===DEF_ORDER.join() && !ROUTE.o.some(k=>/^Q/.test(k));
 function buildPages(){
   const body=[];
   ROUTE.o.forEach(k=>{
