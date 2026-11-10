@@ -1507,13 +1507,30 @@ const ICO={
  phone:`<svg viewBox="0 0 80 60"><rect x="26" y="2" width="30" height="56" rx="6" fill="#fff" stroke="var(--ink)" stroke-width="2.4"/><line x1="36" y1="7" x2="46" y2="7" stroke="var(--ink3)" stroke-width="2" stroke-linecap="round"/>${[0,1,2,3].map(i=>`<circle cx="35" cy="${17+i*10}" r="3.4" fill="${i===1?'var(--accent)':'#fff'}" stroke="${i===1?'var(--accent)':'var(--ink3)'}" stroke-width="1.4"/><line x1="42" y1="${17+i*10}" x2="50" y2="${17+i*10}" stroke="${i===1?'var(--accent)':'var(--ink3)'}" stroke-width="2.4" stroke-linecap="round"/>`).join('')}<path d="M60 10 L66 5 M62 18 L70 16" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/></svg>`,
  bulb:`<svg viewBox="0 0 80 60"><g stroke="#f2a93b" stroke-width="2.4" stroke-linecap="round"><line x1="40" y1="2" x2="40" y2="8"/><line x1="22" y1="9" x2="26" y2="13"/><line x1="58" y1="9" x2="54" y2="13"/><line x1="16" y1="25" x2="22" y2="25"/><line x1="64" y1="25" x2="58" y2="25"/></g><path d="M40 12 a13 13 0 0 1 8 23 v6 h-16 v-6 a13 13 0 0 1 8 -23z" fill="#ffd45c" stroke="var(--ink)" stroke-width="2"/><rect x="33" y="42" width="14" height="5" rx="1.5" fill="var(--ink3)"/><path d="M14 58 Q27 50 40 56 Q53 50 66 58" fill="none" stroke="var(--ink)" stroke-width="2"/></svg>`
 };
+/*@@INTRO@@*/
+/* 「開始之前」第一排：依目前的牌組產生（收起的單元、整個被隱藏的單元不算） */
+function introSteps(step,ar,first){
+  const H=ROUTE.h||[], on=k=>ROUTE.o.includes(k)&&!ROUTE.x.includes(k)&&(/^[QX]/.test(k)||(MODS[k]||[]).some((p,i)=>!H.includes(k+'.'+i)));
+  const QN={'廿':[20],'三':[21],'四':[14],'五':[7],'精':[22,20],'基':[18,24],'待':[19,24]};
+  const qs=[]; ROUTE.o.forEach(k=>{ if(!on(k)) return; const a=/^Q\d+$/.test(k)?[+k.slice(1)]:(QN[k]||[]); a.forEach(n=>{ if(!qs.includes(n)) qs.push(n); }); });
+  const nq=on('六')?[1,2]:[...new Set(NQK.filter(on).map(k=>NQK.indexOf(k)<5?1:2))].sort();
+  const st=[];
+  if(on('一')) st.push(['paper',first,'115 會考']);
+  if(qs.length) st.push(['abcd',qs.length+' 題選擇',(qs.length<=4?qs.map(n=>String(n).padStart(2,'0')).join('、')+' 題':'看誘答')]);
+  if(nq.length) st.push(['blank',nq.length+' 題非選',nq.length===2?'看留白':'第 '+nq[0]+' 題・看留白']);
+  if(on('八')) st.push(['card','1 張卡','回班試兩週']); else if(on('包')) st.push(['card','試行包','帶回班上']);
+  if(typeof document!=='undefined' && !document.getElementById('ipdyn')) document.head.insertAdjacentHTML('beforeend','<style id="ipdyn">.ip-row.n1{grid-template-columns:minmax(0,1fr);max-width:50%}.ip-row.n2{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.ip-row.n3{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr)}@media (max-width:640px){.ip-row.n2,.ip-row.n3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ip-row.n1{max-width:none}}</style>');
+  if(!st.length) return '<div class="ip-row"><div class="ip-say" style="padding:.6em 0">今天的路線依講師安排，請跟著投影翻頁。</div></div>';
+  return '<div class="ip-row dyn n'+st.length+'">'+st.map((s,i)=>(i?ar:'')+step(i+1,s[0],s[1],s[2],'var(--accent)')).join('')+'</div>';
+}
+/*@@INTRO_END@@*/
 function introPage(){
   const step=(n,ic,t,s,c)=>`<div class="ip-c"><div class="ip-n" style="background:${c}">${n}</div><div class="ip-ic">${ICO[ic]}</div><b>${t}</b><small>${s}</small></div>`;
   const ar='<span class="ip-ar">➜</span>';
   return `<div class="ip">
    <div class="ip-h"><span class="ip-k">${META.k}${ED()}</span><div class="h3">開始之前</div></div>
    <section class="ip-band a"><div class="ip-bh"><span class="ip-tag">共讀與分析</span><span class="ip-say">不和他校比，<b>只談這屆國三</b></span></div>
-    <div class="ip-row">${step(1,'paper','本校共讀','115 會考','var(--accent)')}${ar}${step(2,'abcd','3 題選擇','看誘答','var(--accent)')}${ar}${step(3,'blank','2 題非選','看留白','var(--accent)')}${ar}${step(4,'card','1 張卡','回班試兩週','var(--accent)')}</div>
+    ${introSteps(step,ar,'本校共讀')}
     <div class="ip-rule"><span>同一把尺</span><i>動筆</i><em>›</em><i>條件</i><em>›</em><i>關係</i><em>›</em><i>獨立完成</i></div></section>
    <section class="ip-band b"><div class="ip-bh"><span class="ip-tag">怎麼看這本書</span></div>
     <div class="ip-row">${step(1,'book','往右翻頁','或從目錄跳','var(--chalk)')}${ar}${step(2,'think','先猜','先想一想','var(--chalk)')}${ar}${step(3,'phone','手機作答','同一個連結','var(--chalk)')}${ar}${step(4,'bulb','看揭曉','對照猜測','var(--chalk)')}</div></section>
