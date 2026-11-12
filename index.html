@@ -483,8 +483,8 @@ body.proj #notep,body.aud #notep{display:none!important}
 .faqr{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5em 1.2em;align-items:center;min-width:0}
 .faqr .cc{grid-column:2;display:flex;flex-direction:column;align-items:flex-start;gap:.5em;min-width:0}
 .faqr .cc.solo{grid-column:1 / -1}
-.faqr .q{grid-column:1;width:8.5em}.faqr .q svg{width:100%;height:auto;display:block;background:#fff;border-radius:.4em}
-.faqr .cd{font-family:var(--f-display);font-weight:900;font-size:2em;letter-spacing:.14em;line-height:1}
+.faqr .q{grid-column:1;width:min(10em,calc(var(--ph,640px) * .42))}.faqr .q svg{width:100%;height:auto;display:block;background:#fff;border-radius:.4em}
+.faqr .cd{font-family:var(--f-display);font-weight:900;font-size:min(2em,calc(var(--ph,640px) * .075));letter-spacing:.14em;line-height:1}
 .faqr .ph{border:2px dashed var(--line);border-radius:.5em;color:var(--ink3);font-size:.85em;padding:.5em .9em}
 .faqr .set{display:flex;gap:.35em;align-items:center;font-size:.8em;flex-wrap:wrap}
 .faqr input{width:6.5em;min-width:0;font:inherit;padding:.25em .5em;border:1px solid var(--line);border-radius:.35em;text-transform:uppercase;letter-spacing:.08em}
@@ -1117,7 +1117,7 @@ function faRender(el){
   if(c){ try{ const g=qrcode(0,'M'); g.addData(faStu(c)); g.make(); q=g.createSvgTag(6,2); }catch(e){} }
   const link = `<a class="actlink" href="${faCon(u)}" target="_blank" rel="noopener">🖥 開評量系統（${FA_U[u].name.split(' ').slice(0,2).join(' ')}）</a>`;
   const set = `<div class="set"><input data-fa-in="${u}" value="${esc(c)}" placeholder="場次代碼" maxlength="12"><button data-fa-set="${u}">${c?'更新':'顯示 QR'}</button>${c?`<button data-fa-clr="${u}">清除</button>`:''}</div>`;
-  if(c) return `<div class="q">${q}</div><div class="cc"><div class="sm">場次代碼</div><div class="cd" title="${esc(faStu(c))}">${esc(c)}</div>${aud?'':set+link}</div>`;
+  if(c) return `<div class="q">${q}</div><div class="cc"><div class="cd" title="${esc(faStu(c))}">${esc(c)}</div>${aud?'':set.replace('</div>',`<a class="actlink" href="${faCon(u)}" target="_blank" rel="noopener" style="font-size:1em">🖥 評量系統</a></div>`)}</div>`;
   if(aud) return solo(`<div class="ph">等講師輸入場次代碼</div>`);
   return solo(`<div class="set" style="font-size:1em;gap:.6em">${link}${set}</div><div class="sm">先開評量系統建好場次，再把代碼填進來，就會顯示 QR Code</div>`);
 }
