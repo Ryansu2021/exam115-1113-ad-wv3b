@@ -478,7 +478,22 @@ body.proj #notep,body.aud #notep{display:none!important}
 .z20col .ct{font-weight:900;font-size:.82em;margin-top:.35em;white-space:nowrap}
 .z20col .cs{font-size:.74em;color:var(--ink2)}
 .z20col.hl .ct{color:var(--c-red)}
-/*@@M20_END@@*/</style>
+/*@@M20_END@@*//*@@FA@@*/
+/* ===== 選用單元：現場評一次（模組_即時評量.py） ===== */
+.fa-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:1.4em;align-items:center}
+.faqr{display:flex;flex-direction:column;align-items:center;gap:.45em;min-width:0}
+.faqr .q{width:min(15em,100%)}.faqr .q svg{width:100%;height:auto;display:block;background:#fff;border-radius:.4em}
+.faqr .cd{font-family:var(--f-display);font-weight:900;font-size:1.7em;letter-spacing:.14em;line-height:1}
+.faqr .ph{width:min(15em,100%);aspect-ratio:1;border:2px dashed var(--line);border-radius:.5em;display:flex;flex-direction:column;gap:.4em;align-items:center;justify-content:center;text-align:center;color:var(--ink3);font-size:.85em;padding:.8em;line-height:1.6}
+.faqr .set{display:flex;gap:.35em;align-items:center;font-size:.8em}
+.faqr input{width:6.5em;min-width:0;font:inherit;padding:.25em .5em;border:1px solid var(--line);border-radius:.35em;text-transform:uppercase;letter-spacing:.08em}
+.faqr button{white-space:nowrap;font:inherit;padding:.25em .8em;border-radius:99px;border:1px solid var(--line);background:#fff;color:#1c2130;cursor:pointer}
+.faqr .sm{font-size:.75em;color:var(--ink3);text-align:center}
+.faqr .actlink{align-self:center;white-space:nowrap;font-size:.8em}
+.nw{white-space:nowrap}
+.fa-links{display:flex;gap:.6em;flex-wrap:wrap}
+@media (max-width:640px){.fa-grid{grid-template-columns:minmax(0,1fr)}}
+/*@@FA_END@@*/</style>
 
 </head><body><header class="top">
   <div class="brand">會考分析研習<b>學員版</b></div>
@@ -589,6 +604,8 @@ const UNITS = [
  ['非選2圖卡','幾何解析','圖卡 5 張','','第 2 題・5 張','N9'],
  ['非選2圖卡','學生的迷思','圖卡 4 張','','第 2 題・4 張','N10'],
 /*@@M20@@*/ ['第 20 題','從一題會考題講起','選用｜約 25′','選用單元','作答・猜測・揭曉・三版本','廿'],/*@@M20_END@@*/
+/*@@FA@@*/ ['即時評量','第 20 題：現場評一次','選用｜約 12′','','A 卷・儀表板・B 卷（七上 2-1）','測'],
+ ['即時評量','第 14 題：現場評一次','選用｜約 10′','','A 卷・儀表板・B 卷（九下 1-2）','評'],/*@@FA_END@@*/
  ['加題','現場加題','依現場需求','現場加題','依需求加入的題目','庫'],
  ['帶走','回班試行包','依今天的內容','帶走','依今天講過的內容自動列出','包'],
  ['附錄','講師備忘','課前準備','講師備忘','','附錄']
@@ -1080,11 +1097,111 @@ const pgZ20 = u=>[
    '揭曉：三個數字','開場的三個猜測')
 ];
 /*@@M20_END@@*/
+/*@@FA@@*/
+/* ---------- 選用單元：現場評一次（課堂形成性評量系統） ---------- */
+const FA_BASE='https://ryansu2021.github.io/formative-check/';
+const FA_U={'測':{unit:'七上2-1',name:'七上 2-1 質因數分解',pairs:'P03、P06、P07'},'評':{unit:'九下1-2',name:'九下 1-2 二次函數',pairs:'P04、P05、P06'}};
+const faKey=u=>'faCode_'+(CFG.場次代號||'')+'_'+u;
+const faGet=u=>{ try{ return localStorage.getItem(faKey(u))||''; }catch(e){ return ''; } };
+const faSet=(u,v)=>{ try{ v?localStorage.setItem(faKey(u),v):localStorage.removeItem(faKey(u)); }catch(e){} };
+const faStu=c=>FA_BASE+'student.html?role=student'+(c?'&code='+encodeURIComponent(c):'');
+const faCon=u=>FA_BASE+'route-a.html?unit='+encodeURIComponent(FA_U[u].unit);
+const FAQR=u=>`<div class="faqr" data-u="${u}"></div>`;
+function faRender(el){
+  const u=el.dataset.u, c=faGet(u), aud=(typeof IS_AUD!=='undefined')&&IS_AUD;
+  if(!TEACH) return AFTER
+    ? `<a class="actlink" href="${FA_BASE}" target="_blank" rel="noopener">📊 課堂形成性評量入口 →</a><div class="sm">回班時，用自己的 Google 帳號開場次</div>`
+    : `<a class="actlink" href="${faStu('')}" target="_blank" rel="noopener">📱 進入作答頁 →</a><div class="sm">輸入投影上的場次代碼，座號填 1～40 任一號</div>`;
+  let q='';
+  if(c){ try{ const g=qrcode(0,'M'); g.addData(faStu(c)); g.make(); q=g.createSvgTag(6,2); }catch(e){} }
+  const box = c ? `<div class="q">${q}</div><div class="cd" title="${esc(faStu(c))}">${esc(c)}</div>`
+                : `<div class="ph">${aud?'等講師輸入場次代碼':'還沒有場次代碼<br><small>建好場次後填在下面</small>'}</div>`;
+  const ctl = aud ? '' : `<div class="set"><input data-fa-in="${u}" value="${esc(c)}" placeholder="場次代碼" maxlength="12"><button data-fa-set="${u}">${c?'更新':'顯示 QR'}</button>${c?`<button data-fa-clr="${u}">清除</button>`:''}</div>
+    <a class="actlink" href="${faCon(u)}" target="_blank" rel="noopener">🖥 開評量系統</a>`;
+  return box+ctl;
+}
+function faHydrate(){
+  document.querySelectorAll('.faqr').forEach(el=>{
+    const k=(TEACH?'t':AFTER?'a':'s')+faGet(el.dataset.u);
+    if(el.dataset.done===k && el.childElementCount) return;
+    el.dataset.done=k; el.innerHTML=faRender(el);
+  });
+}
+if(typeof document!=='undefined'){
+  setInterval(faHydrate,400);
+  document.addEventListener('click',e=>{
+    const s=e.target.closest&&e.target.closest('[data-fa-set],[data-fa-clr]'); if(!s) return;
+    e.preventDefault(); e.stopPropagation();
+    const u=s.dataset.faSet||s.dataset.faClr;
+    if(s.dataset.faClr){ faSet(u,''); }
+    else{ const box=s.closest('.faqr'), i=box&&box.querySelector('[data-fa-in]'); faSet(u,(i?i.value:'').replace(/[^0-9a-z]/gi,'').toUpperCase()); }
+    faHydrate();
+  },true);
+  document.addEventListener('keydown',e=>{
+    const i=e.target.closest&&e.target.closest('[data-fa-in]'); if(!i||e.key!=='Enter') return;
+    e.preventDefault(); faSet(i.dataset.faIn,i.value.replace(/[^0-9a-z]/gi,'').toUpperCase()); faHydrate();
+  },true);
+}
+const FA_LOOK = [['① 每題的選項分布','哪一題錯最多？錯的人集中在哪一個選項？'],
+ ['② 迷思分布','最多人卡在哪一個迷思？點進去看座號與補救建議。'],
+ ['③ 信心 × 對錯','「有把握卻答錯」的人最先處理；「沒把握但答對」的，下一題再確認一次。']];
+const FA_NEXT = TB(['儀表板上看到','下一步'],[
+ ['大多數人卡在同一個迷思','全班再教一次，換一個例子'],
+ ['集中在幾位學生','分組：這幾位到前面，拆開來再做一題'],
+ ['零星、各自不同','個別回饋：按「公布結果給學生」，學生看自己每題的回饋'],
+ ['有把握卻答錯','優先處理：先讓他說出想法，再給一個反例']]);
+const faLinks=u=>RAW(`<div class="fa-links"><a class="actlink" href="${FA_BASE}" target="_blank" rel="noopener">📊 評量入口（60 節題庫）</a><a class="actlink" href="${faCon(u)}" target="_blank" rel="noopener" style="background:var(--c-indigo)">🖥 ${FA_U[u].name}</a></div>`);
+const faJoin=(u,steps)=>RAW(`<div class="fa-grid">${FAQR(u)}<div>${'<ol style="margin:0;padding-left:1.3em;line-height:1.7;font-size:.9em">'+steps.map(s=>'<li>'+s+'</li>').join('')+'</ol>'}</div></div>`);
+
+const pgFA20 = u=>[
+ op(u,'剛才談完第 20 題的迷思與教法。現在換你們當學生，現場評一次。',[ST([
+   ['A 卷','3 題・每題勾信心','手機作答，交卷前看不到對錯','七上 2-1 質因數分解',C.indigo],
+   ['儀表板','看迷思分布','講師帶讀＋1 分鐘介入','',C.orange],
+   ['B 卷','平行題，只換數字','看誰改善了、誰還卡著','',C.red]]),
+   W('<b>會考數據一年一次，而且是考完才看到。</b>同樣的迷思，課堂上能不能當天就看見、當天就處理？')],'操作｜約 12′'),
+ tx(u,'掃碼進場：七上 2-1 質因數分解',[faJoin('測',[
+   '掃 QR Code（學員版可點「進入作答頁」）',
+   '座號填 1～40 任一號',
+   '寫 3 題，每題勾信心，最後按<b>交卷</b>']),
+   N('和第 20 題同一個動作：<b>看分解式判斷因數，不把數算出來。</b>')],'操作｜手機作答 3′'),
+ tx(u,'先看三樣：選項、迷思、信心',[CG(FA_LOOK,3),
+   W('<b>重點不是答對率，是「錯在哪一個想法」。</b>同一個錯誤選項，背後常是同一個迷思。'),faLinks('測')],'操作｜切到評量系統'),
+ tx(u,'1 分鐘介入：只講一句',[TB(['看到的迷思','介入的一句話'],[
+   ['判因數只看底數，忽略次方','「把 <span class="nw">2³×3²×5</span> 拆成 <span class="nw">2×2×2×3×3×5</span>。<span class="nw">2⁴</span> 要四個 2，挑得出來嗎？」'],
+   ['以為因數要含全部的質因數','「<span class="nw">4＝2×2</span>，從 <span class="nw">2²×3×7</span> 裡挑得出兩個 2 嗎？挑得出來就是因數，3、7 不用一起帶走。」'],
+   ['用「數比較小」判斷是因數','「<span class="nw">2×7</span> 比 M 小，可是 M 的分解式裡有 7 嗎？」']]),
+   W('<b>和第 20 題同一個動作：</b>把數拆成質因數，看「挑不挑得出來」。<span class="nw">M＝2³×11</span>，<span class="nw">8＝2³</span> 挑得出來，所以 8 一定是 M 的因數。')],'操作｜講師 1′'),
+ tx(u,'B 卷：只換數字，再寫一次',[STEPS([
+   '講師按「開始第二場」，同一個連結繼續作答',
+   '3 題換了數字，誘答背後是同樣的迷思',
+   '看儀表板「第二場」：<b>已改善／仍有／新出現</b>各是誰']),
+   W('<b>第二場不是為了打分數，</b>是確認剛才那一句話有沒有效。')],'操作｜手機作答 3′'),
+ tx(u,'看完數據，下一步做什麼？',[FA_NEXT,
+   W('<b>回班怎麼用：</b>教完七上 2-1、或國三複習因數時開一場；兩週試行的前後各開一場，就看得到變化。'),faLinks('測')])
+];
+
+const pgFA14 = u=>[
+ tx(u,'掃碼進場：九下 1-2',[faJoin('評',[
+   '掃 QR Code（學員版可點「進入作答頁」）',
+   '座號填 1～40 任一號',
+   '寫 3 題，每題勾信心，最後按<b>交卷</b>']),
+   N('3 題都在問：<b>函數值 y 可以到哪裡</b>，和第 14 題一樣。')],'操作｜手機作答 3′'),
+ tx(u,'看儀表板，再用一句話介入',[TB(['看到的迷思','介入的一句話'],[
+   ['看係數大小定最大最小','「a 是正的，開口向上還是向下？畫出來，最低點在哪裡？」'],
+   ['乘負數，不等號沒變號','「<span class="nw">(x−2)²≥0</span>，兩邊乘 −2，是大於還是小於？代一個 x 試試看。」'],
+   ['把 h 當成最大最小值','「頂點 <span class="nw">(h, k)</span>：h 說在哪裡，k 說多高。題目問的是哪一個？」'],
+   ['頂點一定在 y 軸上','「代 <span class="nw">x＝0</span> 得到的是哪一點？最高點在 <span class="nw">x＝0</span> 嗎？」']]),
+   W('<b>回到第 14 題：</b><span class="nw">y＝−(x＋5)²−20</span> 開口向下，最大值 −20，所以 <span class="nw">y≤−20</span>，−15 和 25 都不可能 → (B)。'),faLinks('評')],'操作｜切到評量系統'),
+ tx(u,'B 卷之後：下一步做什麼？',[FA_NEXT,
+   W('<b>回班時機：</b>九下 1-2 教完、或國三總複習二次函數時。現在先示範流程，下學期就用得上。')],'操作｜手機作答 3′')
+];
+/*@@FA_END@@*/
 let BODY=[], APPX=[];
 const pgNQ = (i)=>{ const [q,n,l]=NQ_SEC[i], u=ui('N'+(i+1)); return l.filter(k=>NQ[k-1]).map((k,j)=>({k:'slide',u,title:q+'・'+n+' '+(j+1),src:k})); };
 BODY.push(...NQ_SEC.flatMap((_,i)=>pgNQ(i)));
 BODY.push(...pgPack(ui('包')));
 /*@@M20@@*/BODY.push(...pgZ20(ui('廿')));/*@@M20_END@@*/
+/*@@FA@@*/BODY.push(...pgFA20(ui('測')),...pgFA14(ui('評')));/*@@FA_END@@*/
 BODY.push(...pgPick(ui('選')),...pgOpen(ui('序')),...pgData(ui('一')),...pg21(ui('三')),...pg14(ui('四')),...pgL精(ui('精')),...pgL基(ui('基')),...pgL待(ui('待')),...pg07(ui('五')),...pgNonQ(ui('六')),...pgVar(ui('七')),...pgG9(ui('八')));
 APPX = TEACH ? pgAppendix(ui('附錄')) : [];
 
@@ -1156,6 +1273,17 @@ const TN = {
  '第 20 題：回看三個數字':'三個數字都是本校；全國、臺南放在小字對照。'
 });
 /*@@M20_END@@*/
+/*@@FA@@*/Object.assign(TN,{
+ '剛才談完第 20 題的迷思與教法。現在換你們當學生，現場評一次。':'選用單元「第 20 題：現場評一次」（約 12 分鐘）。研習前先做好：開評量系統（七上 2-1）→ Google 登入 → 勾 P03、P06、P07 三組 → 建立場次 → 把代碼填進下一頁。現場沒網路或登不進去，改用示範模式的「模擬全班」，並說明是模擬資料。',
+ '掃碼進場：七上 2-1 質因數分解':'在評量系統按「開始第一場」。等 8 成以上交卷再換頁；儀表板的座號格 ✓ 是已交卷。',
+ '先看三樣：選項、迷思、信心':'切到評量系統儀表板，依序點：各題作答 → 迷思分布 → 信心×對錯。按「結束第一場・進入討論」會出現人數最多的迷思。',
+ '1 分鐘介入：只講一句':'只挑儀表板上人數最多的那一個迷思講，不要三個都講。',
+ 'B 卷：只換數字，再寫一次':'按「開始第二場（平行題）」；結束後儀表板切到「第二場」，迷思分布會標出第一場人數。',
+ '看完數據，下一步做什麼？':'研習後記得在評量系統「結束場次」前先匯出 PDF（結束會刪除雲端作答）。',
+ '掃碼進場：九下 1-2':'選用單元「第 14 題：現場評一次」（約 10 分鐘）。研習前：開評量系統（九下 1-2）→ 勾 P04、P05、P06 三組 → 建立場次 → 代碼填在這一頁。按「開始第一場」。',
+ '看儀表板，再用一句話介入':'依序看各題作答、迷思分布、信心×對錯；只挑人數最多的迷思講一句，再按「開始第二場」。'
+});
+/*@@FA_END@@*/
 if(TEACH) BODY.forEach(p=>{ const k=p.title||(p.u!=null?UNITS[p.u][1]:''); const k2=p.k==='open'?(p.sub||''):''; if(TN[k2]) p.tn=TN[k2]; else if(TN[k]) p.tn=TN[k]; });
 /* ---------- 頁面代號與學員版隱藏 ---------- */
 BODY.forEach(p=>{ if(p.u==null) return; const t=p.title||UNITS[p.u][1]; p.id = UNITS[p.u][1]+'｜'+t; });
@@ -1187,9 +1315,9 @@ BODY.forEach(p=>{ if(EXT_TITLES.has(p.title)) p.ext=1; });
 const UKEYS = UNITS.map(u=>u[5]);
 const MODS = {}; UKEYS.forEach(k=>MODS[k]=BODY.filter(p=>p.u!=null&&UNITS[p.u][5]===k));
 const LAYERS=['精','基','待'];
-const UMIN = {/*@@M20@@*/'廿':[25,17],/*@@M20_END@@*/'包':[3,2],'N1':[5,3],'N2':[2,1],'N3':[2,1],'N4':[10,7],'N5':[11,7],'N6':[2,2],'N7':[2,1],'N8':[2,2],'N9':[3,2],'N10':[2,2],'精':[12,8],'基':[12,8],'待':[12,8],'選':[3,2],'序':[5,3],'一':[13,8],'三':[15,10],'四':[10,7],'五':[3,2],'六':[22,14],'七':[15,10],'八':[17,9]};
-const UCOL = {/*@@M20@@*/'廿':'#d9773f',/*@@M20_END@@*/'包':'#b4532f','N1':'#1f7fa8','N2':'#1f7fa8','N3':'#1f7fa8','N4':'#1f7fa8','N5':'#1f7fa8','N6':'#7a4fc0','N7':'#7a4fc0','N8':'#7a4fc0','N9':'#7a4fc0','N10':'#7a4fc0','精':'#4a3fd6','基':'#2f8a6a','待':'#c0392b','選':'#2f6f8f','序':'#6b7a90','一':'#4a3fd6','三':'#d43c3c','四':'#e0603f','五':'#ec8a3a','六':'#c9851a','七':'#0f8a5f','八':'#7a4fc0','庫':'#3d6fb0'};
-const UICO = {/*@@M20@@*/'廿':'📱',/*@@M20_END@@*/'包':'✅','精':'👥','基':'👥','待':'👥','選':'','序':'📱','一':'📱','三':'📱','四':'📱👥','五':'','六':'📱👥','七':'📱','八':'📱✍'};
+const UMIN = {/*@@FA@@*/'測':[12,9],'評':[10,7],/*@@FA_END@@*//*@@M20@@*/'廿':[25,17],/*@@M20_END@@*/'包':[3,2],'N1':[5,3],'N2':[2,1],'N3':[2,1],'N4':[10,7],'N5':[11,7],'N6':[2,2],'N7':[2,1],'N8':[2,2],'N9':[3,2],'N10':[2,2],'精':[12,8],'基':[12,8],'待':[12,8],'選':[3,2],'序':[5,3],'一':[13,8],'三':[15,10],'四':[10,7],'五':[3,2],'六':[22,14],'七':[15,10],'八':[17,9]};
+const UCOL = {/*@@FA@@*/'測':'#2f8a6a','評':'#2f8a6a',/*@@FA_END@@*//*@@M20@@*/'廿':'#d9773f',/*@@M20_END@@*/'包':'#b4532f','N1':'#1f7fa8','N2':'#1f7fa8','N3':'#1f7fa8','N4':'#1f7fa8','N5':'#1f7fa8','N6':'#7a4fc0','N7':'#7a4fc0','N8':'#7a4fc0','N9':'#7a4fc0','N10':'#7a4fc0','精':'#4a3fd6','基':'#2f8a6a','待':'#c0392b','選':'#2f6f8f','序':'#6b7a90','一':'#4a3fd6','三':'#d43c3c','四':'#e0603f','五':'#ec8a3a','六':'#c9851a','七':'#0f8a5f','八':'#7a4fc0','庫':'#3d6fb0'};
+const UICO = {/*@@FA@@*/'測':'📱📊','評':'📱📊',/*@@FA_END@@*//*@@M20@@*/'廿':'📱',/*@@M20_END@@*/'包':'✅','精':'👥','基':'👥','待':'👥','選':'','序':'📱','一':'📱','三':'📱','四':'📱👥','五':'','六':'📱👥','七':'📱','八':'📱✍'};
 const DEF_ORDER=['序','一','三','四','五','六','七','八','包'];
 /*@@XBANK@@*/const XBANK=[];/*@@XBANK_END@@*/
 
@@ -1226,6 +1354,7 @@ function insertX(tok){
 const ROUTE_KEY='flexRoute_'+(CFG.場次代號||'')+(TEACH?'_t':AFTER?'_a':'_s');
 const normR = r=>{ const o=r.o.slice(), x=(r.x||[]).slice(); LAYERS.forEach(L=>{ if(!o.includes(L)){ const i=o.indexOf('五'); o.splice(i<0?o.length:i,0,L); if(!x.includes(L)) x.push(L); } });
 /*@@M20@@*/  if(!o.includes('廿')){ const i=o.indexOf('一'); o.splice(i<0?o.length:i,0,'廿'); if(!x.includes('廿')) x.push('廿'); }/*@@M20_END@@*/
+/*@@FA@@*/  [['測','廿'],['評','四']].forEach(([k,a])=>{ if(!o.includes(k)){ const i=o.indexOf(a); o.splice(i<0?o.length:i+1,0,k); if(!x.includes(k)) x.push(k); } });/*@@FA_END@@*/
   if(!o.includes('包')){ o.push('包'); if(!o.includes('八') && !x.includes('包')) x.push('包'); }
   r.h=Array.isArray(r.h)?r.h:[];
   NQK.forEach(L=>{ if(!o.includes(L)){ const j=o.indexOf('七'); o.splice(j<0?o.length:j,0,L); if(!x.includes(L)) x.push(L); } }); return Object.assign({},r,{o,x,h:(r.h||[]).slice()}); };
@@ -1233,7 +1362,7 @@ const normR = r=>{ const o=r.o.slice(), x=(r.x||[]).slice(); LAYERS.forEach(L=>{
 let ROUTE=normR((!TEACH&&ROUTE0&&Array.isArray(ROUTE0.o))?ROUTE0:{o:DEF_ORDER.slice(),x:[],c:0});
 try{ const r=JSON.parse(localStorage.getItem(ROUTE_KEY)||'null'); if(r&&Array.isArray(r.o)) ROUTE=normR(r); }catch(e){}
 let PAGES=[], UNIT_START=[], TOCU=[];
-const isDefOrder=()=>ROUTE.o.filter(k=>!/^[QX]/.test(k)&&!LAYERS.includes(k)/*@@M20@@*/&&!(k==='廿'&&ROUTE.x.includes(k))/*@@M20_END@@*/&&!NQK.includes(k)).join()===DEF_ORDER.join() && !ROUTE.o.some(k=>/^Q/.test(k));
+const isDefOrder=()=>ROUTE.o.filter(k=>!/^[QX]/.test(k)&&!LAYERS.includes(k)/*@@M20@@*/&&!(k==='廿'&&ROUTE.x.includes(k))/*@@M20_END@@*//*@@FA@@*/&&!((k==='測'||k==='評')&&ROUTE.x.includes(k))/*@@FA_END@@*/&&!NQK.includes(k)).join()===DEF_ORDER.join() && !ROUTE.o.some(k=>/^Q/.test(k));
 function buildPages(){
   const body=[];
   ROUTE.o.forEach(k=>{
