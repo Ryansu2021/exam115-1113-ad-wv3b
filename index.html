@@ -1100,12 +1100,12 @@ const pgZ20 = u=>[
 /*@@FA@@*/
 /* ---------- 選用單元：現場評一次（課堂形成性評量系統） ---------- */
 const FA_BASE='https://ryansu2021.github.io/formative-check/';
-const FA_U={'測':{unit:'七上2-1',name:'七上 2-1 質因數分解',pairs:'P03、P06、P07'},'評':{unit:'九下1-2',name:'九下 1-2 二次函數',pairs:'P04、P05、P06'}};
+const FA_U={'測':{unit:'七上2-1',name:'七上 2-1 質因數分解'},'評':{unit:'九下1-2',name:'九下 1-2 二次函數'}};
 const faKey=u=>'faCode_'+(CFG.場次代號||'')+'_'+u;
 const faGet=u=>{ try{ return localStorage.getItem(faKey(u))||''; }catch(e){ return ''; } };
 const faSet=(u,v)=>{ try{ v?localStorage.setItem(faKey(u),v):localStorage.removeItem(faKey(u)); }catch(e){} };
 const faStu=c=>FA_BASE+'student.html?role=student'+(c?'&code='+encodeURIComponent(c):'');
-const faCon=u=>FA_BASE+'route-a.html?unit='+encodeURIComponent(FA_U[u].unit);
+const faCon=u=>FA_BASE+'route-a.html?unit='+encodeURIComponent(FA_U[u].unit)+'&n=3';   // 評量系統 v3.24：只顯示這一節的題庫、預設快選 3 題
 const FAQR=u=>`<div class="faqr" data-u="${u}"></div>`;
 function faRender(el){
   const u=el.dataset.u, c=faGet(u), aud=(typeof IS_AUD!=='undefined')&&IS_AUD;
@@ -1275,13 +1275,13 @@ const TN = {
 });
 /*@@M20_END@@*/
 /*@@FA@@*/Object.assign(TN,{
- '剛才談完第 20 題的迷思與教法。現在換你們當學生，現場評一次。':'選用單元「第 20 題：現場評一次」（約 12 分鐘）。研習前先做好：開評量系統（七上 2-1）→ Google 登入 → 勾 P03、P06、P07 三組 → 建立場次 → 把代碼填進下一頁。現場沒網路或登不進去，改用示範模式的「模擬全班」，並說明是模擬資料。',
+ '剛才談完第 20 題的迷思與教法。現在換你們當學生，現場評一次。':'選用單元「第 20 題：現場評一次」（約 12 分鐘）。研習前先做好：開評量系統（七上 2-1）→ Google 登入 → 左邊選「現成」七上 2-1 題庫（連結已預設快選 3 題，左下顯示「已選 3 組」）→ 建立場次 → 把代碼填進下一頁。現場沒網路或登不進去，改用示範模式的「模擬全班」，並說明是模擬資料。',
  '掃碼進場：七上 2-1 質因數分解':'在評量系統按「開始第一場」。等 8 成以上交卷再換頁；儀表板的座號格 ✓ 是已交卷。',
  '先看三樣：選項、迷思、信心':'切到評量系統儀表板，依序點：各題作答 → 迷思分布 → 信心×對錯。按「結束第一場・進入討論」會出現人數最多的迷思。',
  '1 分鐘介入：只講一句':'只挑儀表板上人數最多的那一個迷思講，不要三個都講。',
  'B 卷：只換數字，再寫一次':'按「開始第二場（平行題）」；結束後儀表板切到「第二場」，迷思分布會標出第一場人數。',
  '看完數據，下一步做什麼？':'研習後記得在評量系統「結束場次」前先匯出 PDF（結束會刪除雲端作答）。',
- '掃碼進場：九下 1-2':'選用單元「第 14 題：現場評一次」（約 10 分鐘）。研習前：開評量系統（九下 1-2）→ 勾 P04、P05、P06 三組 → 建立場次 → 代碼填在這一頁。按「開始第一場」。',
+ '掃碼進場：九下 1-2':'選用單元「第 14 題：現場評一次」（約 10 分鐘）。研習前：開評量系統（九下 1-2）→ 左邊選「現成」九下 1-2 題庫（已預設快選 3 題）→ 建立場次 → 代碼填在這一頁。按「開始第一場」。',
  '看儀表板，再用一句話介入':'依序看各題作答、迷思分布、信心×對錯；只挑人數最多的迷思講一句，再按「開始第二場」。'
 });
 /*@@FA_END@@*/
